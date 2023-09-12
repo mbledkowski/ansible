@@ -1,0 +1,11 @@
+- hosts:
+    - jupiter
+    - neptune
+  become: false
+  tasks:
+    - name: Install pnpm
+      shell: wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
+    - name: Install pyenv with shell script
+      shell:
+        cmd: curl https://pyenv.run | bash
+        creates: /home/mble/.pyenv

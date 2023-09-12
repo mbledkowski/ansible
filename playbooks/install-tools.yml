@@ -1,0 +1,146 @@
+- hosts:
+    - jupiter
+    - neptune
+  become: true
+  tasks:
+    - name: Install tools from repository
+      apt:
+        name:
+          - git
+          - git-lfs
+          - gh
+          - file
+          - mpv
+          - calc
+          - dnsutils
+          - htop
+          - btop
+          - exa
+          - bat
+          - wget
+          - wget2
+          - xclip
+          - wl-clipboard
+          - wofi
+          - neofetch
+          - screenfetch
+          - dash
+          - fish
+          - tmux
+          - powerline
+          - gcc
+          - ntfs-3g
+          - zathura
+          - unzip
+          - alacritty
+          - rsync
+          - rclone
+          - jq
+          - tree
+          - virt-manager
+          - tigervnc-common
+          - barrier
+          - minicom
+          - usbutils
+          - locate
+          - cmatrix
+          - poppler-utils
+          - fd-find
+          - ripgrep
+          - ethtool
+          - ffmpeg
+          - fzf
+          - speech-dispatcher
+          - wakeonlan
+          - lolcat
+          - nmap
+          - tailscale
+          - diffuse
+          - ansible
+          - qemu-kvm
+          - screenkey
+          - texlive-full
+          - tex-common
+          - bibtool
+          - bibclean
+          - p7zip
+          - hardinfo
+          - imagemagick
+          - python3
+          - cargo
+          - nodejs
+    - name: Install tools outside repository - Obsidan
+      apt:
+        deb: https://github.com/obsidianmd/obsidian-releases/releases/download/v1.4.5/obsidian_1.4.5_amd64.deb
+    - name: Install PopcornTime dependencies
+      apt:
+        name:
+          - libatomic1
+          # - libgconf-2-4
+          - libcanberra-gtk-module
+    - name: Install tools outside repository - PopcornTime
+      apt:
+        deb: https://github.com/popcorn-official/popcorn-desktop/releases/download/v0.4.9/Popcorn-Time-0.4.9-amd64.deb
+    - name: Install Keybase dependencies
+      apt:
+        name:
+          - libayatana-appindicator1
+    - name: Install tools outside repository - Keybase
+      apt:
+        deb: https://prerelease.keybase.io/keybase_amd64.deb
+    - name: Add Nicotine Plus PPA repository's key
+      apt_key:
+        keyserver: keyserver.ubuntu.com
+        id: 6E60F93DCD3E27CBE2F0CCA16CEB6050A30E5769
+    - name: Add Nicotine Plus PPA repository
+      apt_repository:
+        repo: deb https://ppa.launchpadcontent.net/nicotine-team/stable/ubuntu jammy main
+        state: present
+    - name: Install tools inside PPA repository - Nicotine Plus
+      apt:
+        name:
+          - python3-launchpadlib
+          - software-properties-common
+          - nicotine
+    - name: Add VSCode repository
+      shell: |
+        curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+        sudo install -o root -g root -m 644 microsoft.gpg /usr/share/keyrings/microsoft-archive-keyring.gpg
+        sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/usr/share/keyrings/microsoft-archive-keyring.gpg] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
+        sudo apt update
+    - name: Install VSCode dependencies
+      apt:
+        name: apt-transport-https
+    - name: Install VSCode
+      apt:
+        name: code
+    - name: Add JetBrains PPA repository
+      shell: |
+        curl -s https://s3.eu-central-1.amazonaws.com/jetbrains-ppa/0xA6E8698A.pub.asc | gpg --dearmor | sudo tee /usr/share/keyrings/jetbrains-ppa-archive-keyring.gpg > /dev/null
+        echo "deb [signed-by=/usr/share/keyrings/jetbrains-ppa-archive-keyring.gpg] http://jetbrains-ppa.s3-website.eu-central-1.amazonaws.com any main" | sudo tee /etc/apt/sources.list.d/jetbrains-ppa.list > /dev/null
+        sudo apt-get update
+    - name: Install Lazygit
+      shell: |
+        LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+        curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+        tar xf lazygit.tar.gz lazygit
+        sudo install lazygit /usr/local/bin
+    - name: Install youtube-dl
+      shell: |
+        sudo curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
+        sudo chmod a+rx /usr/local/bin/youtube-dl
+    - name: Add Spotify repository
+      shell: |
+        curl -sS https://download.spotify.com/debian/pubkey_7A3A762FAFD4A51F.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+        echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
+    - name: Install Spotify
+      apt:
+        name: spotify-client
+    - name: Add Syncthing repository
+      shell: |
+        sudo curl -o /usr/share/keyrings/syncthing-archive-keyring.gpg https://syncthing.net/release-key.gpg
+        echo "deb [signed-by=/usr/share/keyrings/syncthing-archive-keyring.gpg] https://apt.syncthing.net/ syncthing stable" | sudo tee /etc/apt/sources.list.d/syncthing.list
+        sudo apt update
+    - name: Install Syncthing
+      apt:
+        name: syncthing

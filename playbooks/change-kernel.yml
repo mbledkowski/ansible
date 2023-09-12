@@ -1,0 +1,8 @@
+- hosts:
+    - jupiter
+    - neptune
+  become: true
+  tasks:
+    - name: Install Liquorix Kernel (zen-like)
+      shell: curl -s 'https://liquorix.net/install-liquorix.sh' | sudo bash
+
